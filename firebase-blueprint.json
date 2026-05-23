@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Dynamic configuration settings for the travel portal including contact, carousel headers, promotional offers, and pricing details.",
+      "type": "object",
+      "properties": {
+        "whatsappNumber": {
+          "type": "string",
+          "description": "The active tour coordinator WhatsApp mobile phone number including country code."
+        },
+        "promotionalOffer": {
+          "type": "string",
+          "description": "Global promotional alert message displayed in the header banner."
+        },
+        "adminPin": {
+          "type": "string",
+          "description": "A 4-digit security pincode to authenticate custom adjustments."
+        },
+        "carouselSlides": {
+          "type": "array",
+          "description": "List of slides containing titles and base64 or Unsplash URLs for the Hero backdrop."
+        },
+        "packages": {
+          "type": "array",
+          "description": "State management representing current packages, descriptions, and dynamic prices."
+        },
+        "paymentGatewayEnabled": {
+          "type": "boolean",
+          "description": "Flag to enable direct payments and booking options."
+        },
+        "upiId": {
+          "type": "string",
+          "description": "UPI VPA address for scan-and-pay transactions."
+        },
+        "upiQrCode": {
+          "type": "string",
+          "description": "Base64 data or URL for custom business UPI QR code."
+        },
+        "razorpayEnabled": {
+          "type": "boolean",
+          "description": "Flag to enable Razorpay credit card/debit card gateway."
+        },
+        "razorpayKeyId": {
+          "type": "string",
+          "description": "Razorpay API key ID for payment initiation."
+        },
+        "marqueeText": {
+          "type": "string",
+          "description": "The scrolling marquee text displayed on the main page."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when configuration parameters were last committed."
+        }
+      },
+      "required": [
+        "whatsappNumber",
+        "promotionalOffer",
+        "adminPin",
+        "carouselSlides",
+        "packages",
+        "paymentGatewayEnabled",
+        "upiId",
+        "upiQrCode",
+        "razorpayEnabled",
+        "razorpayKeyId",
+        "marqueeText"
+      ]
+    }
+  },
+  "firestore": {
+    "/settings/site": {
+      "schema": "SiteSettings",
+      "description": "Global dynamic config document representing tour prices, banners, promos, and WhatsApp channels."
+    }
+  }
+}

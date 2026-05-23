@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Settings Collection Rules
+    match /settings/site {
+      allow read: if true;
+      
+      allow create: if isValidSettings(incoming()) && incoming().adminPin.size() >= 4;
+      
+      allow update: if isValidSettings(incoming()) && (
+        // Must provide the correct current pin to authorize updates
+        incoming().adminPin == existing().adminPin ||
+        (incoming().keys().hasAll(['verificationPin']) && incoming().verificationPin == existing().adminPin)
+      );
+
+      allow delete: if false; // Universal lock on deletion to prevent orphan states
+    }
+
+    // Helper functions for validating SiteSettings
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidSettings(data) {
+      return data.whatsappNumber is string 
+        && data.whatsappNumber.size() >= 5 
+        && data.whatsappNumber.size() <= 32
+        
+        && data.promotionalOffer is string 
+        && data.promotionalOffer.size() >= 0 
+        && data.promotionalOffer.size() <= 400
+        
+        && data.adminPin is string 
+        && data.adminPin.size() >= 4 
+        && data.adminPin.size() <= 8
+        
+        && data.carouselSlides is list 
+        && data.carouselSlides.size() <= 20
+        
+        && data.packages is list 
+        && data.packages.size() <= 20
+
+        && data.paymentGatewayEnabled is bool
+
+        && data.upiId is string
+        && data.upiId.size() <= 128
+
+        && data.upiQrCode is string
+        && data.upiQrCode.size() <= 2000000
+
+        && data.razorpayEnabled is bool
+
+        && data.razorpayKeyId is string
+        && data.razorpayKeyId.size() <= 128
+
+        && data.marqueeText is string
+        && data.marqueeText.size() >= 0
+        && data.marqueeText.size() <= 1000
+
+        && (!data.keys().hasAny(['verificationPin']) || (data.verificationPin is string && data.verificationPin.size() >= 4 && data.verificationPin.size() <= 8))
+        
+        // Strict key constraints to prevent shadow keys and malicious injection
+        && data.keys().hasAll(['whatsappNumber', 'promotionalOffer', 'adminPin', 'carouselSlides', 'packages', 'paymentGatewayEnabled', 'upiId', 'upiQrCode', 'razorpayEnabled', 'razorpayKeyId', 'marqueeText'])
+        && data.keys().size() <= 12;
+    }
+  }
+}

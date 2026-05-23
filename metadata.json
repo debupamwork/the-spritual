@@ -1,0 +1,6 @@
+{
+  "name": "thespritual.in",
+  "description": "Book premium customized holiday packages on thespritual.in including VIP temple entrance, pristine Meghalaya tours, and scenic rivers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
